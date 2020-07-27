@@ -22,6 +22,8 @@ public class NacosProperties {
     @Value("${project.nacos.group:ZUUL_GATEWAY}")
     private String group;
 
+    @Value("${project.nacos.nameSpace:public}")
+    private String nameSpace;
 
     public String getServerAddr() {
         return serverAddr;
@@ -33,5 +35,9 @@ public class NacosProperties {
 
     public String getGroup() {
         return group;
+    }
+
+    public String getNameSpace() {
+        return nameSpace;
     }
 }

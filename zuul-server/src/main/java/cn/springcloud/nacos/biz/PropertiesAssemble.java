@@ -5,6 +5,7 @@ import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 import cn.springcloud.nacos.NewZuulRouteLocator;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
@@ -61,6 +62,7 @@ public class PropertiesAssemble implements InitializingBean {
 		try {
 			Properties properties = new Properties();
 			properties.put(PropertyKeyConst.SERVER_ADDR, nacosProperties.getServerAddr());
+			properties.put(PropertyKeyConst.NAMESPACE, nacosProperties.getNameSpace());
 			ConfigService configService = NacosFactory.createConfigService(properties);
 			String content = configService.getConfig(dataId, group, 5000);
 			System.out.println("从Nacos返回的配置：" + content);
@@ -79,6 +81,9 @@ public class PropertiesAssemble implements InitializingBean {
                     return null;
                 }
             });
+            if(StringUtils.isEmpty(content)){
+            	return Collections.emptyList();
+			}
 			return JSONObject.parseArray(content, ZuulRouteEntity.class).stream().filter(zuulRouteEntity->zuulRouteEntity.getEnabled()).collect(Collectors.toList());
 		} catch (NacosException e) {
 			e.printStackTrace();
